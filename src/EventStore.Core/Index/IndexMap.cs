@@ -319,9 +319,9 @@ namespace EventStore.Core.Index
                                      Func<IndexEntry, Tuple<string, bool>> recordExistsAt,
                                      IIndexFilenameProvider filenameProvider,
                                      byte version,
-                                     bool mergeIfNecessary = true)
+                                     bool skipIndexVerify = false,
                                      int indexCacheDepth = 16,
-                                     bool skipIndexVerify = false)
+                                     bool mergeIfNecessary = true)
         {
             Ensure.Nonnegative(prepareCheckpoint, "prepareCheckpoint");
             Ensure.Nonnegative(commitCheckpoint, "commitCheckpoint");

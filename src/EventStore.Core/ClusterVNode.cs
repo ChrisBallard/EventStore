@@ -177,7 +177,7 @@ namespace EventStore.Core
                                             maxTablesPerLevel: 2,
                                             inMem: db.Config.InMemDb,
                                             skipIndexVerify: vNodeSettings.SkipIndexVerify,
-                                            indexCacheDepth: vNodeSettings.IndexCacheDepth);
+                                            indexCacheDepth: vNodeSettings.IndexCacheDepth,
                                             mergingEnabled: vNodeSettings.IndexMerging);
 
             // ReSharper disable RedundantTypeArgumentsOfMethod

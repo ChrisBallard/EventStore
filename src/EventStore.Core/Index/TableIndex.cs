@@ -65,7 +65,7 @@ namespace EventStore.Core.Index
                           int maxTablesPerLevel = 4,
                           bool additionalReclaim = false,
                           bool inMem = false,
-                          bool mergingEnabled = true)
+                          bool mergingEnabled = true,
                           bool skipIndexVerify = false,
                           int indexCacheDepth = 16)
         {
@@ -285,11 +285,11 @@ namespace EventStore.Core.Index
                                                           (streamId, currentHash) => UpgradeHash(streamId, currentHash),
                                                           entry => reader.ExistsAt(entry.Position),
                                                           entry => ReadEntry(reader, entry.Position), 
-                                                          _fileNameProvider, 
-                                                          _ptableVersion, 
-                                                          _indexCacheDepth,
-                                                          _mergingEnabled);
-                                                          entry => ReadEntry(reader, entry.Position), _fileNameProvider, _ptableVersion, _indexCacheDepth, _skipIndexVerify);
+                                                              _fileNameProvider, 
+                                                              _ptableVersion, 
+                                                              _skipIndexVerify, 
+                                                              _indexCacheDepth, 
+                                                              _mergingEnabled);
                     }
                     _indexMap = mergeResult.MergedMap;
                     _indexMap.SaveToFile(indexmapFile);
