@@ -6,14 +6,16 @@ using System.Text;
 using System.Threading;
 using EventStore.Common.Log;
 using EventStore.Common.Utils;
+using EventStore.Core.Bus;
 using EventStore.Core.Exceptions;
 using EventStore.Core.TransactionLog;
 using EventStore.Core.Util;
 using EventStore.Core.Index.Hashes;
+using EventStore.Core.Messages;
 
 namespace EventStore.Core.Index
 {
-    public class TableIndex : ITableIndex
+    public class TableIndex : ITableIndex, IHandle<ClientMessage.SetIndexMerging>
     {
         public const string IndexMapFilename = "indexmap";
         private const int MaxMemoryTables = 1;
@@ -39,6 +41,7 @@ namespace EventStore.Core.Index
         private readonly object _awaitingTablesLock = new object();
 
         private IndexMap _indexMap;
+        private bool _mergingEnabled;
         private List<TableItem> _awaitingMemTables;
         private long _commitCheckpoint = -1;
         private long _prepareCheckpoint = -1;
@@ -62,6 +65,7 @@ namespace EventStore.Core.Index
                           int maxTablesPerLevel = 4,
                           bool additionalReclaim = false,
                           bool inMem = false,
+                          bool mergingEnabled = true)
                           bool skipIndexVerify = false,
                           int indexCacheDepth = 16)
         {
@@ -84,6 +88,7 @@ namespace EventStore.Core.Index
             _inMem = inMem;
             _skipIndexVerify = ShouldForceIndexVerify() ? false: skipIndexVerify;
             _indexCacheDepth = indexCacheDepth;
+            _mergingEnabled = mergingEnabled;
             _ptableVersion = ptableVersion;
             _awaitingMemTables = new List<TableItem> { new TableItem(_memTableFactory(), -1, -1) };
 
@@ -279,6 +284,11 @@ namespace EventStore.Core.Index
                         mergeResult = _indexMap.AddPTable(ptable, tableItem.PrepareCheckpoint, tableItem.CommitCheckpoint,
                                                           (streamId, currentHash) => UpgradeHash(streamId, currentHash),
                                                           entry => reader.ExistsAt(entry.Position),
+                                                          entry => ReadEntry(reader, entry.Position), 
+                                                          _fileNameProvider, 
+                                                          _ptableVersion, 
+                                                          _indexCacheDepth,
+                                                          _mergingEnabled);
                                                           entry => ReadEntry(reader, entry.Position), _fileNameProvider, _ptableVersion, _indexCacheDepth, _skipIndexVerify);
                     }
                     _indexMap = mergeResult.MergedMap;
@@ -659,6 +669,11 @@ namespace EventStore.Core.Index
             catch{
                 Log.Error("Could not delete force index verification file at: "+path);
             }
+        }
+
+        public void Handle(ClientMessage.SetIndexMerging message)
+        {
+            _mergingEnabled = message.MergingEnabled;
         }
     }
 }

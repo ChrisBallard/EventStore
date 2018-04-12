@@ -106,6 +106,7 @@ namespace EventStore.Core
         protected string _index;
         protected bool _skipIndexVerify;
         protected int _indexCacheDepth;
+        protected bool _disableIndexMerging;
         protected bool _optimizeIndexMerge;
 
         protected bool _unsafeIgnoreHardDelete;
@@ -209,6 +210,7 @@ namespace EventStore.Core
             _index = null;
             _skipIndexVerify = Opts.SkipIndexVerifyDefault;
             _indexCacheDepth = Opts.IndexCacheDepthDefault;
+            _disableIndexMerging = Opts.DisableIndexMergingDefault;
             _indexBitnessVersion = Opts.IndexBitnessVersionDefault;
             _optimizeIndexMerge = Opts.OptimizeIndexMergeDefault;
             _unsafeIgnoreHardDelete = Opts.UnsafeIgnoreHardDeleteDefault;
@@ -982,6 +984,16 @@ namespace EventStore.Core
         }
 
         /// <summary>
+        /// Disabled on-the-fly index merges.
+        /// </summary>
+        /// <returns>A <see cref="VNodeBuilder"/> with the options set</returns>
+        public VNodeBuilder WithIndexMergingDisabled()
+        {
+            _disableIndexMerging = true;
+            return this;
+        }
+
+        /// <summary>
         /// Disables Hard Deletes (UNSAFE: use to remove hard deletes)
         /// </summary>
         /// <returns>A <see cref="VNodeBuilder"/> with the options set</returns>
@@ -1399,6 +1411,7 @@ namespace EventStore.Core
                     _enableHistograms,
                     _skipIndexVerify,
                     _indexCacheDepth,
+                    !_disableIndexMerging,
                     _indexBitnessVersion,
                     _optimizeIndexMerge,
                     consumerStrategies,

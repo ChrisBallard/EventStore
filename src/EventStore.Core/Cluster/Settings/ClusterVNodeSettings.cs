@@ -66,6 +66,7 @@ namespace EventStore.Core.Cluster.Settings
         public readonly int HashCollisionReadLimit;
         public readonly bool SkipIndexVerify;
         public readonly int IndexCacheDepth;
+        public readonly bool IndexMerging;
         public readonly byte IndexBitnessVersion;
         public readonly bool OptimizeIndexMerge;
         public readonly int ChunkInitialReaderCount;
@@ -132,6 +133,7 @@ namespace EventStore.Core.Cluster.Settings
                                     string index = null, bool enableHistograms = false,
                                     bool skipIndexVerify = false,
                                     int indexCacheDepth = 16,
+                                    bool indexMergingEnabled = true,
                                     byte indexBitnessVersion = 4,
                                     bool optimizeIndexMerge = false,
                                     IPersistentSubscriptionConsumerStrategyFactory[] additionalConsumerStrategies = null,
@@ -225,6 +227,7 @@ namespace EventStore.Core.Cluster.Settings
             EnableHistograms = enableHistograms;
             SkipIndexVerify = skipIndexVerify;
             IndexCacheDepth = indexCacheDepth;
+            IndexMerging = indexMergingEnabled;
             IndexBitnessVersion = indexBitnessVersion;
             OptimizeIndexMerge = optimizeIndexMerge;
             Index = index;

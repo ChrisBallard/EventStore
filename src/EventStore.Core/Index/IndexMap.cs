@@ -319,6 +319,7 @@ namespace EventStore.Core.Index
                                      Func<IndexEntry, Tuple<string, bool>> recordExistsAt,
                                      IIndexFilenameProvider filenameProvider,
                                      byte version,
+                                     bool mergeIfNecessary = true)
                                      int indexCacheDepth = 16,
                                      bool skipIndexVerify = false)
         {
@@ -330,9 +331,10 @@ namespace EventStore.Core.Index
             tables[0].Add(tableToAdd);
 
             var toDelete = new List<PTable>();
-            for (int level = 0; level < tables.Count; level++)
+
+            if (mergeIfNecessary)
             {
-                if (tables[level].Count >= _maxTablesPerLevel)
+                for (int level = 0; level < tables.Count; level++)
                 {
                     var filename = filenameProvider.GetFilenameNewTable();
                     PTable table = PTable.MergeTo(tables[level], filename, upgradeHash, existsAt, recordExistsAt, version, indexCacheDepth, skipIndexVerify);
@@ -346,6 +348,7 @@ namespace EventStore.Core.Index
             var indexMap = new IndexMap(Version, tables, prepareCheckpoint, commitCheckpoint, _maxTablesPerLevel);
             return new MergeResult(indexMap, toDelete);
         }
+
 
         public void Dispose(TimeSpan timeout)
         {
