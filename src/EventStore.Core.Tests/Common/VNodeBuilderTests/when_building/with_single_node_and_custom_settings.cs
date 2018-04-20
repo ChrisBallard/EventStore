@@ -5,6 +5,7 @@ using System.Net;
 using EventStore.Core.TransactionLog.Chunks;
 using EventStore.Core.Services.Monitoring;
 using System.Collections.Generic;
+using EventStore.Common.Options;
 using EventStore.Common.Utils;
 
 namespace EventStore.Core.Tests.Common.VNodeBuilderTests.when_building
@@ -684,13 +685,28 @@ namespace EventStore.Core.Tests.Common.VNodeBuilderTests.when_building
     {
         public override void Given()
         {
-            _builder.WithIndexMergingDisabled();
+            _builder.WithIndexMergingLevel(IndexMergingLevel.MergeDisabled);
         }
 
         [Test]
-        public void should_set_index_cache_depth()
+        public void should_set_merge_level_disabled()
         {
-            Assert.AreEqual(false, _settings.IndexMerging);
+            Assert.AreEqual(IndexMergingLevel.MergeDisabled, _settings.IndexMergingLevel);
+        }
+    }
+    
+    [TestFixture]
+    public class with_index_merge_throttling : SingleNodeScenario
+    {
+        public override void Given()
+        {
+            _builder.WithIndexMergingLevel(IndexMergingLevel.HeavyThrottling);
+        }
+
+        [Test]
+        public void should_set_merge_throttling()
+        {
+            Assert.AreEqual(IndexMergingLevel.HeavyThrottling, _settings.IndexMergingLevel);
         }
     }
 

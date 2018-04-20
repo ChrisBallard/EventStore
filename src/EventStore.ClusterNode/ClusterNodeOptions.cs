@@ -209,9 +209,8 @@ namespace EventStore.ClusterNode
 
         [ArgDescription(Opts.IndexCacheDepthDescr, Opts.DbGroup)]
         public int IndexCacheDepth { get; set; }
-        [ArgDescription(Opts.DisableIndexMergingDescr, Opts.DbGroup)]
-        public bool DisableIndexMerging { get; set; }
-
+        [ArgDescription(Opts.IndexMergingLevelDescr, Opts.DbGroup)]
+        public IndexMergingLevel IndexMergingLevel { get; set; }
         [ArgDescription(Opts.OptimizeIndexMergeDescr, Opts.DbGroup)]
         public bool OptimizeIndexMerge { get; set; }
 
@@ -332,7 +331,7 @@ namespace EventStore.ClusterNode
             GossipAllowedDifferenceMs = Opts.GossipAllowedDifferenceMsDefault;
             GossipTimeoutMs = Opts.GossipTimeoutMsDefault;
             IndexCacheDepth = Opts.IndexCacheDepthDefault;
-            DisableIndexMerging = Opts.DisableIndexMergingDefault;
+            IndexMergingLevel = Opts.IndexMergingLevelDefault;
             SkipIndexVerify = Opts.SkipIndexVerifyDefault;
             OptimizeIndexMerge = Opts.OptimizeIndexMergeDefault;
             EnableHistograms = Opts.HistogramEnabledDefault;

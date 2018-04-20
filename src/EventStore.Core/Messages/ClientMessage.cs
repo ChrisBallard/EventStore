@@ -1,6 +1,7 @@
 using System;
 using System.Security.Principal;
 using System.Threading;
+using EventStore.Common.Options;
 using EventStore.Common.Utils;
 using EventStore.Core.Data;
 using EventStore.Core.Messaging;
@@ -1458,11 +1459,11 @@ namespace EventStore.Core.Messages
             private static readonly int TypeId = Interlocked.Increment(ref NextMsgId);
             public override int MsgTypeId { get { return TypeId; } }
 
-            public readonly bool MergingEnabled;
+            public readonly IndexMergingLevel IndexMergingLevel;
 
-            public SetIndexMerging(bool mergingEnabled)
+            public SetIndexMerging(IndexMergingLevel mergingLevel)
             {
-                MergingEnabled = mergingEnabled;
+                IndexMergingLevel = mergingLevel;
             }
         }
     }

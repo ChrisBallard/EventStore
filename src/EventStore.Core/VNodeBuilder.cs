@@ -106,7 +106,7 @@ namespace EventStore.Core
         protected string _index;
         protected bool _skipIndexVerify;
         protected int _indexCacheDepth;
-        protected bool _disableIndexMerging;
+        protected IndexMergingLevel _indexMergingLevel;
         protected bool _optimizeIndexMerge;
 
         protected bool _unsafeIgnoreHardDelete;
@@ -210,7 +210,7 @@ namespace EventStore.Core
             _index = null;
             _skipIndexVerify = Opts.SkipIndexVerifyDefault;
             _indexCacheDepth = Opts.IndexCacheDepthDefault;
-            _disableIndexMerging = Opts.DisableIndexMergingDefault;
+            _indexMergingLevel = Opts.IndexMergingLevelDefault;
             _indexBitnessVersion = Opts.IndexBitnessVersionDefault;
             _optimizeIndexMerge = Opts.OptimizeIndexMergeDefault;
             _unsafeIgnoreHardDelete = Opts.UnsafeIgnoreHardDeleteDefault;
@@ -984,12 +984,12 @@ namespace EventStore.Core
         }
 
         /// <summary>
-        /// Disabled on-the-fly index merges.
+        /// Determine how to throttle our index merges
         /// </summary>
         /// <returns>A <see cref="VNodeBuilder"/> with the options set</returns>
-        public VNodeBuilder WithIndexMergingDisabled()
+        public VNodeBuilder WithIndexMergingLevel(IndexMergingLevel level)
         {
-            _disableIndexMerging = true;
+            _indexMergingLevel = level;
             return this;
         }
 
@@ -1411,7 +1411,7 @@ namespace EventStore.Core
                     _enableHistograms,
                     _skipIndexVerify,
                     _indexCacheDepth,
-                    !_disableIndexMerging,
+                    _indexMergingLevel,
                     _indexBitnessVersion,
                     _optimizeIndexMerge,
                     consumerStrategies,

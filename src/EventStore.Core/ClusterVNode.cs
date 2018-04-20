@@ -178,7 +178,7 @@ namespace EventStore.Core
                                             inMem: db.Config.InMemDb,
                                             skipIndexVerify: vNodeSettings.SkipIndexVerify,
                                             indexCacheDepth: vNodeSettings.IndexCacheDepth,
-                                            mergingEnabled: vNodeSettings.IndexMerging);
+                                            indexMergingLevel: vNodeSettings.IndexMergingLevel);
 
             // ReSharper disable RedundantTypeArgumentsOfMethod
             _mainBus.Subscribe<ClientMessage.SetIndexMerging>(tableIndex);

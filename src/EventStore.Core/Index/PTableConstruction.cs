@@ -144,6 +144,8 @@ namespace EventStore.Core.Index
                         var current = enumerators[idx].Current;
                         if(existsAt(current))
                         {
+                            // TODO -
+                            // Here we could do the throttling - maybe too tight a loop? could track iterations and sleep once per n iters??
                             AppendRecordTo(bs, buffer, version, current, indexEntrySize);
                             if(version >= PTableVersions.IndexV4 && IsMidpointIndex(indexEntry,numIndexEntries,requiredMidpointCount)){
                                 midpoints.Add(new Midpoint(new IndexEntryKey(current.Stream,current.Version),indexEntry));

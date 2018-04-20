@@ -1,5 +1,6 @@
 using System.IO;
 using System.Linq;
+using EventStore.Common.Options;
 using EventStore.Core.Index;
 using NUnit.Framework;
 
@@ -26,22 +27,22 @@ namespace EventStore.Core.Tests.Index.IndexV1
 
             _result = _map.AddPTable(PTable.FromMemtable(memtable, GetTempFilePath()), 1, 2,
                 (streamId, hash) => hash,
-                _ => true, _ => new System.Tuple<string, bool>("", true), new GuidFilenameProvider(PathName), _ptableVersion, mergeIfNecessary: false);
+                _ => true, _ => new System.Tuple<string, bool>("", true), new GuidFilenameProvider(PathName), _ptableVersion, mergingLevel: IndexMergingLevel.MergeDisabled);
             _result.ToDelete.ForEach(x => x.MarkForDestruction());
 
             _result = _result.MergedMap.AddPTable(PTable.FromMemtable(memtable, GetTempFilePath()), 3, 4,
                 (streamId, hash) => hash,
-                _ => true, _ => new System.Tuple<string, bool>("", true), new GuidFilenameProvider(PathName), _ptableVersion, mergeIfNecessary: false);
+                _ => true, _ => new System.Tuple<string, bool>("", true), new GuidFilenameProvider(PathName), _ptableVersion, mergingLevel: IndexMergingLevel.MergeDisabled);
             _result.ToDelete.ForEach(x => x.MarkForDestruction());
 
             _result = _result.MergedMap.AddPTable(PTable.FromMemtable(memtable, GetTempFilePath()), 4, 5,
                 (streamId, hash) => hash,
-                _ => true, _ => new System.Tuple<string, bool>("", true), new GuidFilenameProvider(PathName), _ptableVersion, mergeIfNecessary: false);
+                _ => true, _ => new System.Tuple<string, bool>("", true), new GuidFilenameProvider(PathName), _ptableVersion, mergingLevel: IndexMergingLevel.MergeDisabled);
             _result.ToDelete.ForEach(x => x.MarkForDestruction());
 
             _result = _result.MergedMap.AddPTable(PTable.FromMemtable(memtable, GetTempFilePath()), 0, 1,
                 (streamId, hash) => hash,
-                _ => true, _ => new System.Tuple<string, bool>("", true), new GuidFilenameProvider(PathName), _ptableVersion, mergeIfNecessary: false);
+                _ => true, _ => new System.Tuple<string, bool>("", true), new GuidFilenameProvider(PathName), _ptableVersion, mergingLevel: IndexMergingLevel.MergeDisabled);
             _result.ToDelete.ForEach(x => x.MarkForDestruction());
         }
 

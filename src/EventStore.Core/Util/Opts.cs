@@ -339,8 +339,8 @@ namespace EventStore.Core.Util
         public const string IndexCacheDepthDescr = "Sets the depth to cache for the mid point cache in index.";
         public static int IndexCacheDepthDefault = 16;
 
-        public const string DisableIndexMergingDescr = "Whether or not to disable on-the-fly index merges.  Only disable if you plan on enabling it via the admin http request during quiet periods.";
-        public static bool DisableIndexMergingDefault = false;
+        public const string IndexMergingLevelDescr = "Throttling level for index merges.  Only disable if you plan on enabling it via the admin http request during quiet periods.";
+        public static IndexMergingLevel IndexMergingLevelDefault = IndexMergingLevel.NoThrottling;
 
         public const string IndexBitnessVersionDescr = "Sets the bitness version for the indexes to use";
         public const byte IndexBitnessVersionDefault = EventStore.Core.Index.PTableVersions.IndexV4;

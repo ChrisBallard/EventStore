@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using EventStore.Common.Log;
+using EventStore.Common.Options;
 using EventStore.Common.Utils;
 using EventStore.Core.Data;
 using EventStore.Core.Exceptions;
@@ -321,7 +322,7 @@ namespace EventStore.Core.Index
                                      byte version,
                                      bool skipIndexVerify = false,
                                      int indexCacheDepth = 16,
-                                     bool mergeIfNecessary = true)
+                                     IndexMergingLevel mergingLevel = IndexMergingLevel.NoThrottling)
         {
             Ensure.Nonnegative(prepareCheckpoint, "prepareCheckpoint");
             Ensure.Nonnegative(commitCheckpoint, "commitCheckpoint");
@@ -332,10 +333,14 @@ namespace EventStore.Core.Index
 
             var toDelete = new List<PTable>();
 
-            if (mergeIfNecessary)
+            if (mergingLevel != IndexMergingLevel.MergeDisabled)
             {
                 for (int level = 0; level < tables.Count; level++)
                 {
+                    // TODO - 
+                    // var localDelay = _throttleLookup(throttleLevel);
+                    // Thread.Sleep(localDelay);
+                    // probably not good enough - needs to go in PTable.MergeTo also
                     var filename = filenameProvider.GetFilenameNewTable();
                     PTable table = PTable.MergeTo(tables[level], filename, upgradeHash, existsAt, recordExistsAt, version, indexCacheDepth, skipIndexVerify);
                     CreateIfNeeded(level + 1, tables);

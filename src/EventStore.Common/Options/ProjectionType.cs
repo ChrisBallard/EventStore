@@ -6,4 +6,12 @@
         System,
         All
     }
+
+    public enum IndexMergingLevel
+    {
+        NoThrottling,
+        MediumThrottling,
+        HeavyThrottling,
+        MergeDisabled
+    }
 }

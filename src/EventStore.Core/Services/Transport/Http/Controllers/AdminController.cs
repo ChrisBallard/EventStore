@@ -1,5 +1,6 @@
 ﻿using System;
 using EventStore.Common.Log;
+using EventStore.Common.Options;
 using EventStore.Core.Bus;
 using EventStore.Core.Messages;
 using EventStore.Core.Messaging;
@@ -24,7 +25,7 @@ namespace EventStore.Core.Services.Transport.Http.Controllers
             service.RegisterAction(new ControllerAction("/admin/shutdown", HttpMethod.Post, Codec.NoCodecs, SupportedCodecs), OnPostShutdown);
             service.RegisterAction(new ControllerAction("/admin/scavenge", HttpMethod.Post, Codec.NoCodecs, SupportedCodecs), OnPostScavenge);
 
-            service.RegisterAction(new ControllerAction("/admin/indexMerging?enabled={enabled}", HttpMethod.Post, Codec.NoCodecs, SupportedCodecs), OnPostSetIndexMerging);
+            service.RegisterAction(new ControllerAction("/admin/indexMerging?level={level}", HttpMethod.Post, Codec.NoCodecs, SupportedCodecs), OnPostSetIndexMerging);
         }
         
 
@@ -32,12 +33,12 @@ namespace EventStore.Core.Services.Transport.Http.Controllers
         {
             if (IsAuthorized(entity))
             {
-                bool mergingEnabled;
-                if (bool.TryParse(match.BoundVariables["enabled"], out mergingEnabled))
+                IndexMergingLevel mergingLevel;
+                if (Enum.TryParse<IndexMergingLevel>(match.BoundVariables["level"], true, out mergingLevel))
                 {
                     Log.Info(
-                        $"Request set index merging={mergingEnabled} because {nameof(OnPostSetIndexMerging)} has been triggered.");
-                    Publish(new ClientMessage.SetIndexMerging(mergingEnabled));
+                        $"Request set index merging level={mergingLevel} because {nameof(OnPostSetIndexMerging)} has been triggered.");
+                    Publish(new ClientMessage.SetIndexMerging(mergingLevel));
                     entity.ReplyStatus(HttpStatusCode.OK, "OK", LogReplyError);
                 }
                 else

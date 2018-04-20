@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using EventStore.Common.Log;
+using EventStore.Common.Options;
 using EventStore.Common.Utils;
 using EventStore.Core.Bus;
 using EventStore.Core.Exceptions;
@@ -41,7 +42,7 @@ namespace EventStore.Core.Index
         private readonly object _awaitingTablesLock = new object();
 
         private IndexMap _indexMap;
-        private bool _mergingEnabled;
+        private IndexMergingLevel _indexMergingLevel;
         private List<TableItem> _awaitingMemTables;
         private long _commitCheckpoint = -1;
         private long _prepareCheckpoint = -1;
@@ -65,7 +66,7 @@ namespace EventStore.Core.Index
                           int maxTablesPerLevel = 4,
                           bool additionalReclaim = false,
                           bool inMem = false,
-                          bool mergingEnabled = true,
+                          IndexMergingLevel indexMergingLevel = IndexMergingLevel.NoThrottling,
                           bool skipIndexVerify = false,
                           int indexCacheDepth = 16)
         {
@@ -88,7 +89,7 @@ namespace EventStore.Core.Index
             _inMem = inMem;
             _skipIndexVerify = ShouldForceIndexVerify() ? false: skipIndexVerify;
             _indexCacheDepth = indexCacheDepth;
-            _mergingEnabled = mergingEnabled;
+            _indexMergingLevel = indexMergingLevel;
             _ptableVersion = ptableVersion;
             _awaitingMemTables = new List<TableItem> { new TableItem(_memTableFactory(), -1, -1) };
 
@@ -289,7 +290,7 @@ namespace EventStore.Core.Index
                                                               _ptableVersion, 
                                                               _skipIndexVerify, 
                                                               _indexCacheDepth, 
-                                                              _mergingEnabled);
+                                                              _indexMergingLevel);
                     }
                     _indexMap = mergeResult.MergedMap;
                     _indexMap.SaveToFile(indexmapFile);
@@ -673,7 +674,7 @@ namespace EventStore.Core.Index
 
         public void Handle(ClientMessage.SetIndexMerging message)
         {
-            _mergingEnabled = message.MergingEnabled;
+            _indexMergingLevel = message.IndexMergingLevel;
         }
     }
 }

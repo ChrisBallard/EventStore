@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Security.Cryptography.X509Certificates;
+using EventStore.Common.Options;
 using EventStore.Common.Utils;
 using EventStore.Core.Authentication;
 using EventStore.Core.Data;
@@ -66,7 +67,7 @@ namespace EventStore.Core.Cluster.Settings
         public readonly int HashCollisionReadLimit;
         public readonly bool SkipIndexVerify;
         public readonly int IndexCacheDepth;
-        public readonly bool IndexMerging;
+        public readonly IndexMergingLevel IndexMergingLevel;
         public readonly byte IndexBitnessVersion;
         public readonly bool OptimizeIndexMerge;
         public readonly int ChunkInitialReaderCount;
@@ -133,7 +134,7 @@ namespace EventStore.Core.Cluster.Settings
                                     string index = null, bool enableHistograms = false,
                                     bool skipIndexVerify = false,
                                     int indexCacheDepth = 16,
-                                    bool indexMergingEnabled = true,
+                                    IndexMergingLevel indexMergingLevel = IndexMergingLevel.NoThrottling,
                                     byte indexBitnessVersion = 4,
                                     bool optimizeIndexMerge = false,
                                     IPersistentSubscriptionConsumerStrategyFactory[] additionalConsumerStrategies = null,
@@ -227,7 +228,7 @@ namespace EventStore.Core.Cluster.Settings
             EnableHistograms = enableHistograms;
             SkipIndexVerify = skipIndexVerify;
             IndexCacheDepth = indexCacheDepth;
-            IndexMerging = indexMergingEnabled;
+            IndexMergingLevel = indexMergingLevel;
             IndexBitnessVersion = indexBitnessVersion;
             OptimizeIndexMerge = optimizeIndexMerge;
             Index = index;
